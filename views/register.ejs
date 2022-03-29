@@ -1,0 +1,81 @@
+<!-- <h1> Sign up form </h1>
+
+<form action="/register" method="POST">
+	<input type="text" name="username"
+		placeholder="username">
+	<input type="password" name="password"
+		placeholder="password">
+	<button>Submit</button>
+</form>
+
+<h1>This is home page</h1>
+
+<li><a href="/register">Sign up!!</a></li>
+<li><a href="/login">Login</a></li>
+<li><a href="/logout">Logout</a></li> -->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>knot</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="style2.css">
+  </head>
+  <body>
+  <div class="nav-div">
+      <div class="nav-logo">
+        <a href="/register"><img class="logo-img" src="images/knot-logo-inverted.png"></a>
+      </div>
+  </div>
+    <div class="container" ng-app="myApp" ng-controller="myCtrl">
+      <div class="container-form">
+        <div class="form-title">
+          Register
+          <hr>
+        </div>
+        <form name="valid" novalidate action="/register" method="POST">
+          <input type="text" ng-model="fname" name="fname" placeholder="Name" ng-minlength="3" required/>
+          <span ng-show="valid.fname.$touched && valid.fname.$invalid">Name is invalid</span>
+
+          <input type="text" ng-model="uname" name="username" placeholder="Username" ng-minlength="3" required/>
+          <span ng-show="valid.lname.$touched && valid.lname.$invalid"> Username is invalid </span>
+
+          <input type="email" ng-model="email" name="email" placeholder="Email" required/>
+          <span ng-show="valid.email.$touched && valid.email.$invalid"> Email is invalid </span>
+
+          <input type="password" ng-model="pass" name="password" placeholder="Password" required/>
+          <span ng-show="valid.pass.$touched && valid.pass.$invalid"> Password is invalid </span>
+
+          <input type="password" ng-model="conpass" name="conpass" placeholder="Confirm Password" required/>
+          <span ng-show="valid.pass.$touched && valid.pass.$invalid"> Password is invalid </span>
+
+          <input type="submit" class="disbuttons" ng-model="submit" name="submit" value="Done" ng-click="trigger()" ng-disabled="valid.$invalid">
+          <input type="reset" class="disbuttons" ng-model="reset" name="reset" value="Cancel" ng-click="del()" ng-disabled="valid.$pristine">
+					<a href="/login"><button type="button" name="redirect">Have an account?</button></a>
+
+        </form>
+
+      </div>
+  </body>
+</html>
+<script type="text/javascript">
+  var app = angular
+                  .module('myApp',[])
+                  .controller("myCtrl",function($scope){
+                      var stud = {};
+                      var tab = [{fname:"Steve", lname:"John", email:"john@gmail.com", phone:"0123456789"}];
+                      $scope.trigger = function(){
+                        stud.fname = $scope.fname;
+                        stud.lname = $scope.lname;
+                        stud.email = $scope.email;
+                        stud.pass = $scope.pass;
+                        stud.phone = $scope.phone;
+                        tab.push(stud);
+                      }
+                      $scope.students = tab;
+                      $scope.del = function() {
+                        $scope.myform.$setPristine();
+                      }
+                  });
+</script>

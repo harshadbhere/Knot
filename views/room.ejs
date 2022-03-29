@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/9d940c57dc.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style0.css" />
+    <link rel="stylesheet" href="style1.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="loaderjs.js"></script>
+    <script src="https://kit.fontawesome.com/c939d0e917.js"></script>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script>
+      const ROOM_ID = "<%= roomId %>";
+    </script>
+  </head>
+  <body>
+    <div id="loader"></div>
+    <div class="container">
+      <div class="container-head">
+        <div class="logo-img-div">
+          <a href="/home"><img src="images/knot-logo-inverted.png" class="logo-img" alt="knot-logo"></a>
+        </div>
+      </div>
+
+
+      <div class="container-sidebar-main">
+        <div class="container-sidebar">
+          <!-- global optional, meeting, chat, whiteboard, compiler -->
+          <div class="sidebar-icon">
+            <!-- <div class="icon" id="Global" onclick="trigger('Global')"><i class="fas fa-mug-hot fa-2x"></i>Global</div> -->
+            <div class="icon" id="Call-icon" onclick="trigger('Calls')" style="border-left: 2px solid blue; color: #d4d5d9; background-color: #181a1b;"><i class="fas fa-headset fa-2x"></i>Call</div>
+            <!-- <div class="icon" id="Chat" onclick="trigger('Chat')"><i class="fas fa-comment fa-2x"></i>Chat</div> -->
+            <div class="icon" id="Whiteboard-icon" onclick="trigger('Whiteboard')"><i class="fas fa-clipboard fa-2x"></i>Collab</div>
+            <div class="icon" id="Compiler-icon" onclick="trigger('Compiler')"><i class="fas fa-code fa-2x"></i>Compile</div>
+          </div>
+        </div>
+
+        <!-- <button onclick="myFunction()">Click Me</button> -->
+        <!-- main container with all the main codes -->
+        <div class="main-body">
+        <div class="container-main" id="container-main">
+
+          <div class="call" id="call">
+            <div class="header">
+              <div class="logo">
+                <div class="header__back">
+                  <i class="fas fa-angle-left"></i>
+                </div>
+                <h3>Video Chat</h3>
+              </div>
+            </div>
+            <div class="main">
+            <div class="main__left">
+              <div class="videos__group">
+                <div id="video-grid">
+
+                </div>
+              </div>
+              <div class="options">
+                <div class="options__left">
+                  <div id="stopVideo" class="options__button">
+                    <i class="fa fa-video-camera"></i>
+                  </div>
+                  <div id="muteButton" class="options__button">
+                    <i class="fa fa-microphone"></i>
+                  </div>
+                  <div id="showChat" class="options__button">
+                    <i class="fa fa-comment"></i>
+                  </div>
+                </div>
+                <div class="options__right">
+                  <div id="inviteButton" class="options__button">
+                    <i class="fas fa-user-plus"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="whiteboard" id="whiteboard" style="display:none">
+            <canvas class="canvas" width="920" height="650"></canvas>
+            <div class="colors">
+              <div class="color white"></div>
+              <div class="color red"></div>
+              <div class="color green"></div>
+              <div class="color blue"></div>
+              <div class="color yellow"></div>
+              <button class="color clear" style="color:black; margin-left:600px;" onclick="clearCanvas()">Clear</button>
+            </div>
+          </div>
+
+          <div class="compiler" id="compiler" style="display:none">
+            <form id="myform" method="post" action="/compilecode">
+            <div class="compiler-main-container">
+              <div class="compiler-settings">
+
+                <select class="abc compiler-sett languages" id="languages" onchange="changeLanguage();">
+                  <option value="Python">Python</option>
+                  <option value="C">C</option>
+                  <option value="C++">C++</option>
+                  <option value="Java">Java</option>
+                </select>
+
+                <select class="abc compiler-sett themes" id="themes" onchange="changeTheme()">
+                  <option value="monokai">Theme: Monokai</option>
+                  <option value="dracula">Theme: Dracula</option>
+                  <option value="github">Theme: Github</option>
+                  <option value="nord">Theme: Nord</option>
+                  <option value="solarized">Theme: Solarized</option>
+                </select>
+
+                <select class="abc compiler-sett font-size" id="font-size" onchange="changeSize()">
+                  <option>Font Size</option>
+                  <option value="6">Font Size: 6</option>
+                  <option value="8">Font Size: 8</option>
+                  <option value="10">Font Size: 10</option>
+                  <option value="12">Font Size: 12</option>
+                  <option value="14">Font Size: 14</option>
+                  <option value="16">Font Size: 16</option>
+                  <option value="18">Font Size: 18</option>
+                  <option value="20">Font Size: 20</option>
+                </select>
+
+                <div class="compiler-sett-buttons">
+                  <button class="compiler-sett-submit btn buttonload" id="loading-button"><i class="fa fa-spinner fa-spin"></i> Loading</button>
+                  <input type="submit" class="compiler-sett-submit btn" id="submit-button" value="Compile & Run" onclick="changebuttonAnimation();">
+<!-- onclick="executeCode(); changebuttonAnimation();" -->
+                </div>
+              </div>
+              <div class="compiler-sett-radio">
+              Compile With Input:<input type="radio" name="inputRadio" id="inputRadio" value="true"/>Yes<input type="radio" name="inputRadio" id="inputRadio" value="false" checked="checked"/>No
+              </div>
+              <div class="code-compiler editor" id="editor"></div>
+            </div>
+            <div class="compiler-inop-container">
+
+              <textarea type="text" class="code-inp input" id="inputco" placeholder="Input"></textarea>
+              <textarea type="text" class="code-out output" id="outputco" placeholder="Output" readonly></textarea>
+            </div>
+          </form>
+          </div>
+        </div>
+        <div class="chat-box">
+          <section class="chat__section">
+              <div class="brand">
+                  <h3>Chat</h3>
+              </div>
+              <div class="message__area"></div>
+              <div>
+                  <textarea id="textarea" cols="30" rows="1" placeholder="Write a message..."></textarea>
+              </div>
+          </section>
+        </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="scripts/lib/ace.js"></script>
+    <script src="scripts/ide.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/client.js"></script>
+    <script src="scripts/script.js" charset="utf-8"></script>
+    <script src="script.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/main.js"></script>
+    <script type="text/javascript">
+    function clearCanvas(){
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+                // var inputScreen = ace.edit("inputco");
+                // var outputScreen = ace.edit("outputco");
+    $('#myform').on('submit', function(event){
+              event.preventDefault();  // Prevent from posting as HTML form
+              $.ajax({
+                  url : '/compilecode',
+                  type : 'POST',
+                  data : { code : ace.edit("editor").getValue(),
+                  input: $(".input").val(),
+                  inputRadio : $("input[name='inputRadio']:checked").val(),
+                  lang : $('#languages option:selected').text()},
+                  success : function(result){
+                  if ($('#languages option:selected').text()=="Python")
+                  {
+                    if (result.hasOwnProperty('output'))
+                    {
+                                  $(".output").text(result["output"]);
+                    }
+                    else
+                    {
+                                  $(".output").text(result["error"]);
+                    }
+                                //outputScreen.setValue(JSON.stringify(result));
+                  }
+                  else
+                  {
+                                $(".output").text(result);
+                  }
+                      }
+                  });
+                  });
+
+    </script>
+
+  </body>
+</html>
